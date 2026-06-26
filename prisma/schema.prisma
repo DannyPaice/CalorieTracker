@@ -16,4 +16,61 @@ model Profile {
   tdeeBase        Int?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  dayTypes   DayType[]
+  dayLogs    DayLog[]
+  foodEntries FoodEntry[]
+}
+
+model DayType {
+  id              String   @id @default(cuid())
+  profileId       String
+  name            String
+  targetCalories  Int
+  targetProteinG  Int
+  targetCarbsG    Int
+  targetFatG      Int
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  dayLogs  DayLog[]
+
+  @@unique([profileId, name])
+  @@index([profileId])
+}
+
+model DayLog {
+  id         String   @id @default(cuid())
+  profileId  String
+  date       DateTime @db.Date
+  dayTypeId  String
+  weightKg   Float?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  profile      Profile      @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  dayType      DayType      @relation(fields: [dayTypeId], references: [id])
+  foodEntries  FoodEntry[]
+
+  @@unique([profileId, date])
+  @@index([profileId, date])
+}
+
+model FoodEntry {
+  id         String   @id @default(cuid())
+  profileId  String
+  dayLogId   String
+  name       String
+  calories   Int
+  proteinG   Float
+  carbsG     Float
+  fatG       Float
+  loggedAt   DateTime @default(now())
+
+  profile  Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  dayLog   DayLog   @relation(fields: [dayLogId], references: [id], onDelete: Cascade)
+
+  @@index([profileId])
+  @@index([dayLogId])
 }
