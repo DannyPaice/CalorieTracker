@@ -1,5 +1,6 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "./prisma";
+import { todayDate } from "./date";
 
 const DEFAULT_DAY_TYPES = [
   {
@@ -55,4 +56,16 @@ export async function getOrCreateProfile() {
   });
 
   return profile;
+}
+
+export async function getTodaysDayLog(profileId: string) {
+  return prisma.dayLog.findUnique({
+    where: {
+      profileId_date: { profileId, date: todayDate() },
+    },
+    include: {
+      dayType: true,
+      foodEntries: { orderBy: { loggedAt: "asc" } },
+    },
+  });
 }
