@@ -3,6 +3,9 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { updateProfile, type ProfileFormState } from "./actions";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Props = {
   initial: {
@@ -16,13 +19,9 @@ type Props = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <button
-      type="submit"
-      disabled={pending}
-      className="bg-black text-white px-4 py-2 rounded font-medium disabled:opacity-50"
-    >
+    <Button type="submit" disabled={pending} size="lg" className="w-full">
       {pending ? "Saving..." : "Save"}
-    </button>
+    </Button>
   );
 }
 
@@ -33,11 +32,10 @@ export function ProfileForm({ initial }: Props) {
   );
 
   return (
-    <form action={formAction} className="space-y-4 max-w-md">
+    <form action={formAction} className="space-y-4">
       <Field
         name="heightCm"
         label="Height (cm)"
-        type="number"
         step="0.1"
         defaultValue={initial.heightCm ?? ""}
         errors={state.errors?.heightCm}
@@ -45,7 +43,6 @@ export function ProfileForm({ initial }: Props) {
       <Field
         name="currentWeightKg"
         label="Current weight (kg)"
-        type="number"
         step="0.1"
         defaultValue={initial.currentWeightKg ?? ""}
         errors={state.errors?.currentWeightKg}
@@ -53,7 +50,6 @@ export function ProfileForm({ initial }: Props) {
       <Field
         name="bodyFatPct"
         label="Body fat % (optional)"
-        type="number"
         step="0.1"
         defaultValue={initial.bodyFatPct ?? ""}
         errors={state.errors?.bodyFatPct}
@@ -61,13 +57,12 @@ export function ProfileForm({ initial }: Props) {
       <Field
         name="tdeeBase"
         label="TDEE baseline (kcal)"
-        type="number"
         defaultValue={initial.tdeeBase ?? ""}
         errors={state.errors?.tdeeBase}
       />
 
       {state.errors?._form && (
-        <p className="text-sm text-red-600">{state.errors._form[0]}</p>
+        <p className="text-sm text-destructive">{state.errors._form[0]}</p>
       )}
 
       <SubmitButton />
@@ -78,32 +73,28 @@ export function ProfileForm({ initial }: Props) {
 function Field({
   name,
   label,
-  type,
   step,
   defaultValue,
   errors,
 }: {
   name: string;
   label: string;
-  type: string;
   step?: string;
   defaultValue: string | number;
   errors?: string[];
 }) {
   return (
-    <div className="space-y-1">
-      <label htmlFor={name} className="text-sm font-medium block">
-        {label}
-      </label>
-      <input
+    <div className="space-y-2">
+      <Label htmlFor={name}>{label}</Label>
+      <Input
         id={name}
         name={name}
-        type={type}
-        step={step}
+        type="number"
+        step={step ?? "1"}
+        inputMode="decimal"
         defaultValue={defaultValue}
-        className="border border-gray-300 rounded px-3 py-2 w-full"
       />
-      {errors?.[0] && <p className="text-sm text-red-600">{errors[0]}</p>}
+      {errors?.[0] && <p className="text-sm text-destructive">{errors[0]}</p>}
     </div>
   );
 }

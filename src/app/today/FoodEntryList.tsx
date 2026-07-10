@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { deleteFoodEntry } from "./actions";
+import { Button } from "@/components/ui/button";
 
 type FoodEntry = {
   id: string;
@@ -19,7 +20,9 @@ type Props = {
 export function FoodEntryList({ entries }: Props) {
   if (entries.length === 0) {
     return (
-      <p className="text-sm text-gray-500">No food logged yet today.</p>
+      <p className="text-sm text-muted-foreground py-4 text-center">
+        No food logged yet today.
+      </p>
     );
   }
 
@@ -36,24 +39,24 @@ function FoodEntryRow({ entry }: { entry: FoodEntry }) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <li className="flex items-center justify-between text-sm border border-gray-200 rounded px-3 py-2">
+    <li className="flex items-center gap-3 p-3 rounded-lg border bg-card">
       <div className="flex-1 min-w-0">
         <p className="font-medium truncate">{entry.name}</p>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-muted-foreground">
           {entry.calories} kcal &middot; P {entry.proteinG}g &middot; C{" "}
           {entry.carbsG}g &middot; F {entry.fatG}g
         </p>
       </div>
-      <button
+      <Button
         type="button"
+        variant="ghost"
+        size="sm"
         disabled={isPending}
-        onClick={() =>
-          startTransition(() => deleteFoodEntry(entry.id))
-        }
-        className="text-xs text-red-600 hover:underline disabled:opacity-50 ml-3"
+        onClick={() => startTransition(() => deleteFoodEntry(entry.id))}
+        className="text-destructive"
       >
         {isPending ? "..." : "Delete"}
-      </button>
+      </Button>
     </li>
   );
 }

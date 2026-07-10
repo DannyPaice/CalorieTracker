@@ -5,15 +5,17 @@ import { DayTypePicker } from "./today/DayTypePicker";
 import { FoodEntryForm } from "./today/FoodEntryForm";
 import { FoodEntryList } from "./today/FoodEntryList";
 import { TotalsBar } from "./today/TotalsBar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 export default async function Home() {
   const profile = await getOrCreateProfile();
 
   if (!profile) {
     return (
-      <main className="p-8 max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-2">Calorie Tracker</h1>
-        <p className="text-gray-600">Sign in to start tracking.</p>
+      <main className="p-6 max-w-md mx-auto space-y-4">
+        <h1 className="text-3xl font-bold tracking-tight">Calorie Tracker</h1>
+        <p className="text-muted-foreground">Sign in to start tracking.</p>
       </main>
     );
   }
@@ -25,17 +27,22 @@ export default async function Home() {
 
   if (!profileComplete) {
     return (
-      <main className="p-8 max-w-2xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold">Welcome back</h1>
-        <div className="border border-amber-300 bg-amber-50 rounded p-4 text-sm flex items-center justify-between">
-          <span>Set up your profile to unlock daily targets.</span>
-          <Link
-            href="/profile"
-            className="bg-amber-900 text-white px-3 py-1.5 rounded text-xs font-medium"
-          >
-            Set up
-          </Link>
-        </div>
+      <main className="p-6 max-w-md mx-auto space-y-6">
+        <h1 className="text-3xl font-bold tracking-tight">Welcome</h1>
+        <Card>
+          <CardHeader>
+            <CardTitle>Set up your profile</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <p className="text-sm text-muted-foreground">
+              Add your height, weight, and calorie baseline to unlock daily
+              targets.
+            </p>
+            <Link href="/profile" className="block">
+              <Button size="lg" className="w-full">Get started</Button>
+            </Link>
+          </CardContent>
+        </Card>
       </main>
     );
   }
@@ -58,61 +65,70 @@ export default async function Home() {
     { calories: 0, proteinG: 0, carbsG: 0, fatG: 0 }
   );
 
+  const dateLabel = new Date().toLocaleDateString("en-AU", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+
   return (
-    <main className="p-8 max-w-2xl mx-auto space-y-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Today</h1>
-        <Link
-          href="/profile"
-          className="text-sm text-gray-500 hover:underline"
-        >
-          Edit profile
-        </Link>
-      </div>
+    <main className="p-6 max-w-md mx-auto space-y-6 pb-24">
+      <header className="space-y-1">
+        <p className="text-sm text-muted-foreground">{dateLabel}</p>
+        <h1 className="text-3xl font-bold tracking-tight">Today</h1>
+      </header>
 
-      <section className="space-y-3">
-        <h2 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-          Day type
-        </h2>
-        <DayTypePicker
-          dayTypes={dayTypes}
-          currentDayTypeId={dayLog?.dayTypeId ?? null}
-        />
-      </section>
-
-      {dayLog && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-            Totals
-          </h2>
-          <TotalsBar
-            consumed={consumed}
-            targets={{
-              targetCalories: dayLog.dayType.targetCalories,
-              targetProteinG: dayLog.dayType.targetProteinG,
-              targetCarbsG: dayLog.dayType.targetCarbsG,
-              targetFatG: dayLog.dayType.targetFatG,
-            }}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Day type</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <DayTypePicker
+            dayTypes={dayTypes}
+            currentDayTypeId={dayLog?.dayTypeId ?? null}
           />
-        </section>
+        </CardContent>
+      </Card>
+
+      {dayLog && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Totals</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <TotalsBar
+              consumed={consumed}
+              targets={{
+                targetCalories: dayLog.dayType.targetCalories,
+                targetProteinG: dayLog.dayType.targetProteinG,
+                targetCarbsG: dayLog.dayType.targetCarbsG,
+                targetFatG: dayLog.dayType.targetFatG,
+              }}
+            />
+          </CardContent>
+        </Card>
       )}
 
       {dayLog && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-            Add food
-          </h2>
-          <FoodEntryForm />
-        </section>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Add food</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FoodEntryForm />
+          </CardContent>
+        </Card>
       )}
 
       {dayLog && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-medium text-gray-600 uppercase tracking-wide">
-            Logged today
-          </h2>
-          <FoodEntryList entries={dayLog.foodEntries} />
-        </section>
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Logged today</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FoodEntryList entries={dayLog.foodEntries} />
+          </CardContent>
+        </Card>
       )}
     </main>
   );

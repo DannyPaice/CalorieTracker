@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { pickDayType } from "./actions";
+import { Button } from "@/components/ui/button";
 
 type DayType = {
   id: string;
@@ -17,23 +18,21 @@ export function DayTypePicker({ dayTypes, currentDayTypeId }: Props) {
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className="grid grid-cols-3 gap-2">
       {dayTypes.map((dt) => {
         const isSelected = dt.id === currentDayTypeId;
         return (
-          <button
+          <Button
             key={dt.id}
             type="button"
+            variant={isSelected ? "default" : "outline"}
+            size="lg"
             disabled={isPending}
             onClick={() => startTransition(() => pickDayType(dt.id))}
-            className={`px-3 py-1.5 rounded text-sm font-medium border ${
-              isSelected
-                ? "bg-black text-white border-black"
-                : "bg-white text-black border-gray-300 hover:bg-gray-50"
-            } disabled:opacity-50`}
+            className="h-14"
           >
             {dt.name}
-          </button>
+          </Button>
         );
       })}
     </div>
