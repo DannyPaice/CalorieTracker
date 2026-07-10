@@ -23,6 +23,17 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Calorie Tracker",
   description: "Personal nutrition and training tracker",
+  manifest: "/manifest.json",
+  themeColor: "#000000",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Tracker",
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
