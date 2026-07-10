@@ -7,6 +7,7 @@ import {
   SignUpButton,
   UserButton,
 } from "@clerk/nextjs";
+import { BottomNav } from "@/components/nav/BottomNav";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -35,17 +36,22 @@ export default function RootLayout({
         lang="en"
         className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
       >
-        <body className="min-h-full flex flex-col">
-          <header className="flex justify-end items-center p-4 gap-4 h-16 border-b">
+        <body className="min-h-full flex flex-col bg-background text-foreground">
+          <header className="flex justify-end items-center px-4 h-14 border-b bg-background">
             <Show when="signed-out">
-              <SignInButton />
-              <SignUpButton />
+              <div className="flex gap-2">
+                <SignInButton />
+                <SignUpButton />
+              </div>
             </Show>
             <Show when="signed-in">
               <UserButton />
             </Show>
           </header>
-          {children}
+          <div className="flex-1">{children}</div>
+          <Show when="signed-in">
+            <BottomNav />
+          </Show>
         </body>
       </html>
     </ClerkProvider>
